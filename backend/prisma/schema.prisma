@@ -1,0 +1,101 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// -----------------------
+// User Model
+// -----------------------
+model User {
+  id          String       @id @default(cuid())
+  name        String
+  email       String       @unique
+  password    String?
+  role        String       @default("user") // user/admin
+  inventories Inventory[] // inventories owned
+  items       Item[] // items created
+  discussions Discussion[] // discussion messages
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+// -----------------------
+// Inventory Model
+// -----------------------
+model Inventory {
+  id          String       @id @default(cuid())
+  name        String
+  description String?
+  isPublic    Boolean      @default(false)
+  ownerId     String
+  owner       User         @relation(fields: [ownerId], references: [id])
+  items       Item[]
+  fields      Field[]
+  customIDs   CustomID[]
+  discussions Discussion[]
+  version     Int          @default(1) // optimistic locking
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+// -----------------------
+// Item Model
+// -----------------------
+model Item {
+  id          String    @id @default(cuid())
+  inventoryId String
+  inventory   Inventory @relation(fields: [inventoryId], references: [id])
+  creatorId   String
+  creator     User      @relation(fields: [creatorId], references: [id])
+  name        String
+  description String?
+  type        String // optional type
+  likes       Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+// -----------------------
+// Field Model
+// -----------------------
+model Field {
+  id          String    @id @default(cuid())
+  inventoryId String
+  inventory   Inventory @relation(fields: [inventoryId], references: [id])
+  name        String
+  type        String // string, number, text, checkbox, doc/link
+  order       Int
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+// -----------------------
+// CustomID Model
+// -----------------------
+model CustomID {
+  id          String    @id @default(cuid())
+  inventoryId String
+  inventory   Inventory @relation(fields: [inventoryId], references: [id])
+  value       String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([inventoryId, value]) // composite index for uniqueness
+}
+
+// -----------------------
+// Discussion Model
+// -----------------------
+model Discussion {
+  id          String    @id @default(cuid())
+  inventoryId String
+  inventory   Inventory @relation(fields: [inventoryId], references: [id])
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  message     String
+  createdAt   DateTime  @default(now())
+}
