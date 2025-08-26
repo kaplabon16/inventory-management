@@ -2,7 +2,7 @@
 import passport from 'passport'
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20'
 import { Strategy as GitHubStrategy } from 'passport-github2'
-import prisma from '../prismaClient.js' // Make sure this path is correct
+import prisma from '/backend/prismaClient' // Make sure this path is correct
 
 // Serialize user to store in session
 passport.serializeUser((user, done) => {
