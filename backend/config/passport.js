@@ -1,23 +1,8 @@
-// File: config/passport.js
+// backend/config/passport.js
 import passport from 'passport'
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20'
 import { Strategy as GitHubStrategy } from 'passport-github2'
-import prisma from '/backend/prismaClient' // Make sure this path is correct
-
-// Serialize user to store in session
-passport.serializeUser((user, done) => {
-  done(null, user.id)
-})
-
-// Deserialize user from session
-passport.deserializeUser(async (id, done) => {
-  try {
-    const user = await prisma.user.findUnique({ where: { id } })
-    done(null, user)
-  } catch (err) {
-    done(err, null)
-  }
-})
+import { prisma } from './db.js'
 
 /* ----------------- Google OAuth ----------------- */
 passport.use(
@@ -62,14 +47,14 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        let user = await prisma.user.findUnique({
-          where: { email: profile.emails[0].value }
-        })
+        let email = profile.emails?.[0]?.value
+        if (!email) email = `${profile.username}@github.com` // fallback
+        let user = await prisma.user.findUnique({ where: { email } })
 
         if (!user) {
           user = await prisma.user.create({
             data: {
-              email: profile.emails[0].value,
+              email,
               name: profile.displayName || profile.username,
               provider: 'github',
               avatar: profile.photos[0]?.value
@@ -84,5 +69,19 @@ passport.use(
     }
   )
 )
+
+/* ----------------- Sessions ----------------- */
+passport.serializeUser((user, done) => {
+  done(null, user.id)
+})
+
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = await prisma.user.findUnique({ where: { id } })
+    done(null, user)
+  } catch (err) {
+    done(err, null)
+  }
+})
 
 export default passport
