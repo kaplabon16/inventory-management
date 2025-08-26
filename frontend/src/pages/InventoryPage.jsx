@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from "react"
 import { useParams } from "react-router-dom"
-import { getInventoryDetails } from "../api/inventory"
+import { getInventory } from "../api/inventory"
 import InventoryList from "../components/Inventory/InventoryList"
 import InventorySettings from "../components/Inventory/InventorySettings"
 import CustomIDBuilder from "../components/Inventory/CustomIDBuilder"
@@ -15,8 +15,8 @@ const InventoryPage = () => {
   useEffect(() => {
     const fetchInventory = async () => {
       try {
-        const res = await getInventoryDetails(id)
-        setInventory(res.data)
+        const data = await getInventory(id)
+        setInventory(data)
       } catch (err) {
         console.error(err)
       }
