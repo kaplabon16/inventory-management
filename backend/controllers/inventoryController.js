@@ -21,7 +21,7 @@ export const getInventory = async (req, res) => {
 export const createInventory = async (req, res) => {
   const { name, description, isPublic } = req.body
   const inventory = await prisma.inventory.create({
-    data: { name, description, isPublic, ownerId: req.user.id }
+    data: { name, description, isPublic, ownerId: req.user.id, version: 1 }
   })
   res.json(inventory)
 }
@@ -29,11 +29,11 @@ export const createInventory = async (req, res) => {
 export const updateInventory = async (req, res) => {
   const { id } = req.params
   const { name, description, isPublic, version } = req.body
-  const inventory = await prisma.inventory.updateMany({
+  const updated = await prisma.inventory.updateMany({
     where: { id, version },
     data: { name, description, isPublic, version: { increment: 1 } }
   })
-  if (inventory.count === 0) return res.status(409).json({ message: 'Conflict: Optimistic lock failed' })
+  if (updated.count === 0) return res.status(409).json({ message: 'Conflict: Optimistic lock failed' })
   res.json({ message: 'Updated successfully' })
 }
 

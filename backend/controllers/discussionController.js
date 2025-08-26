@@ -4,7 +4,7 @@ export const listMessages = async (req, res) => {
   const { inventoryId } = req.params
   const messages = await prisma.discussion.findMany({
     where: { inventoryId },
-    include: { user: true },
+    include: { user: { select: { id: true, name: true } } },
     orderBy: { createdAt: 'asc' }
   })
   res.json(messages)

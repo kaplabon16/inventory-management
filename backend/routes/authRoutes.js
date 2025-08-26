@@ -8,13 +8,9 @@ router.post('/register', register)
 router.post('/login', login)
 
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }))
-router.get('/google/callback', passport.authenticate('google', { failureRedirect: '/' }), (req, res) => {
-  res.redirect('/dashboard')
-})
+router.get('/google/callback', passport.authenticate('google', { failureRedirect: '/' }), (req, res) => res.redirect(process.env.FRONTEND_URL + '/dashboard'))
 
 router.get('/github', passport.authenticate('github', { scope: ['user:email'] }))
-router.get('/github/callback', passport.authenticate('github', { failureRedirect: '/' }), (req, res) => {
-  res.redirect('/dashboard')
-})
+router.get('/github/callback', passport.authenticate('github', { failureRedirect: '/' }), (req, res) => res.redirect(process.env.FRONTEND_URL + '/dashboard'))
 
 export default router
