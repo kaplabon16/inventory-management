@@ -2,13 +2,14 @@
 import passport from 'passport'
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20'
 import { Strategy as GitHubStrategy } from 'passport-github2'
-import prisma from '../prismaClient.js' // adjust path if needed
+import prisma from '../prismaClient.js' // Make sure this path is correct
 
-// Serialize and deserialize user for session support
+// Serialize user to store in session
 passport.serializeUser((user, done) => {
   done(null, user.id)
 })
 
+// Deserialize user from session
 passport.deserializeUser(async (id, done) => {
   try {
     const user = await prisma.user.findUnique({ where: { id } })
@@ -28,12 +29,10 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        // Find existing user
         let user = await prisma.user.findUnique({
           where: { email: profile.emails[0].value }
         })
 
-        // If user doesn't exist, create a new one
         if (!user) {
           user = await prisma.user.create({
             data: {
@@ -63,12 +62,10 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        // Find existing user
         let user = await prisma.user.findUnique({
           where: { email: profile.emails[0].value }
         })
 
-        // If user doesn't exist, create a new one
         if (!user) {
           user = await prisma.user.create({
             data: {
