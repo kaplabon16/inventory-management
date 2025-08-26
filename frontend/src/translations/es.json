@@ -1,0 +1,40 @@
+{
+  "home": {
+    "title": "Todos los Inventarios",
+    "loading": "Cargando inventarios..."
+  },
+  "inventory": {
+    "items": "Elementos",
+    "settings": "Configuración",
+    "customID": "Constructor de ID Personalizado",
+    "discussion": "Foro de Discusión",
+    "loading": "Cargando inventario..."
+  },
+  "item": {
+    "details": "Detalles del Elemento",
+    "loading": "Cargando elemento..."
+  },
+  "user": {
+    "profile": "Perfil de Usuario"
+  },
+  "admin": {
+    "title": "Panel de Administración - Usuarios",
+    "username": "Nombre de Usuario",
+    "email": "Correo Electrónico",
+    "joined": "Registrado"
+  },
+  "auth": {
+    "login": "Iniciar Sesión",
+    "register": "Registrar",
+    "socialLogin": "Iniciar sesión con cuenta social",
+    "logout": "Cerrar Sesión"
+  },
+  "ui": {
+    "darkMode": "Modo Oscuro",
+    "lightMode": "Modo Claro",
+    "search": "Buscar..."
+  },
+  "errors": {
+    "fetchFailed": "Error al obtener los datos"
+  }
+}

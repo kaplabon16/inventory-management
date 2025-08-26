@@ -1,6 +1,20 @@
 import express from 'express'
+import passport from 'passport'
 import { register, login } from '../controllers/authController.js'
 
-export const authRouter = express.Router()
-authRouter.post('/register', register)
-authRouter.post('/login', login)
+const router = express.Router()
+
+router.post('/register', register)
+router.post('/login', login)
+
+router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }))
+router.get('/google/callback', passport.authenticate('google', { failureRedirect: '/' }), (req, res) => {
+  res.redirect('/dashboard')
+})
+
+router.get('/github', passport.authenticate('github', { scope: ['user:email'] }))
+router.get('/github/callback', passport.authenticate('github', { failureRedirect: '/' }), (req, res) => {
+  res.redirect('/dashboard')
+})
+
+export default router

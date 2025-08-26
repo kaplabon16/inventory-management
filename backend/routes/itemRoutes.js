@@ -1,9 +1,14 @@
 import express from 'express'
-import { createItem, updateItem, likeItem } from '../controllers/itemController.js'
-import { protect } from '../middleware/authMiddleware.js'
+import { isAuthenticated } from '../middleware/authMiddleware.js'
+import { listItems, getItem, createItem, updateItem, deleteItem, likeItem } from '../controllers/itemController.js'
 
-export const itemRouter = express.Router()
-itemRouter.use(protect)
-itemRouter.post('/', createItem)
-itemRouter.put('/:id', updateItem)
-itemRouter.post('/:id/like', likeItem)
+const router = express.Router()
+
+router.get('/:inventoryId', isAuthenticated, listItems)
+router.get('/item/:id', isAuthenticated, getItem)
+router.post('/', isAuthenticated, createItem)
+router.put('/:id', isAuthenticated, updateItem)
+router.delete('/:id', isAuthenticated, deleteItem)
+router.post('/:id/like', isAuthenticated, likeItem)
+
+export default router

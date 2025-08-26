@@ -1,3 +1,8 @@
-export const generateCustomID = (prefix='INV') => {
-  return `${prefix}-${Date.now().toString(36)}-${Math.floor(Math.random()*1000)}`
+export const generateCustomID = length => {
+  let result = ''
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+  for (let i = 0; i < length; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length))
+  }
+  return result
 }

@@ -1,8 +1,10 @@
 import express from 'express'
-import { getMessages, postMessage } from '../controllers/discussionController.js'
-import { protect } from '../middleware/authMiddleware.js'
+import { isAuthenticated } from '../middleware/authMiddleware.js'
+import { listMessages, postMessage } from '../controllers/discussionController.js'
 
-export const discussionRouter = express.Router()
-discussionRouter.use(protect)
-discussionRouter.get('/:inventoryId', getMessages)
-discussionRouter.post('/', postMessage)
+const router = express.Router()
+
+router.get('/:inventoryId', isAuthenticated, listMessages)
+router.post('/', isAuthenticated, postMessage)
+
+export default router

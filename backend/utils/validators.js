@@ -1,2 +1,2 @@
-export const isValidEmail = email => /\S+@\S+\.\S+/.test(email)
-export const isValidPassword = password => password?.length >= 6
+export const isValidEmail = email =>
+  /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(email)

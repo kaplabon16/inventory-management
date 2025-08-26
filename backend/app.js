@@ -1,27 +1,37 @@
 import express from 'express'
 import cors from 'cors'
-import dotenv from 'dotenv'
+import session from 'express-session'
 import passport from 'passport'
-import { authRouter } from './routes/authRoutes.js'
-import { userRouter } from './routes/userRoutes.js'
-import { inventoryRouter } from './routes/inventoryRoutes.js'
-import { itemRouter } from './routes/itemRoutes.js'
-import { discussionRouter } from './routes/discussionRoutes.js'
-import './config/passport.js'
+import dotenv from 'dotenv'
+import authRoutes from './routes/authRoutes.js'
+import userRoutes from './routes/userRoutes.js'
+import inventoryRoutes from './routes/inventoryRoutes.js'
+import itemRoutes from './routes/itemRoutes.js'
+import discussionRoutes from './routes/discussionRoutes.js'
 import { errorHandler } from './middleware/errorMiddleware.js'
 
 dotenv.config()
+import './config/passport.js'
+
 const app = express()
 
 app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }))
 app.use(express.json())
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false
+  })
+)
 app.use(passport.initialize())
+app.use(passport.session())
 
-app.use('/api/auth', authRouter)
-app.use('/api/users', userRouter)
-app.use('/api/inventories', inventoryRouter)
-app.use('/api/items', itemRouter)
-app.use('/api/discussions', discussionRouter)
+app.use('/auth', authRoutes)
+app.use('/users', userRoutes)
+app.use('/inventories', inventoryRoutes)
+app.use('/items', itemRoutes)
+app.use('/discussions', discussionRoutes)
 
 app.use(errorHandler)
 

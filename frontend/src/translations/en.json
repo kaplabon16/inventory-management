@@ -1,0 +1,40 @@
+{
+  "home": {
+    "title": "All Inventories",
+    "loading": "Loading inventories..."
+  },
+  "inventory": {
+    "items": "Items",
+    "settings": "Settings",
+    "customID": "Custom ID Builder",
+    "discussion": "Discussion Board",
+    "loading": "Loading inventory..."
+  },
+  "item": {
+    "details": "Item Details",
+    "loading": "Loading item..."
+  },
+  "user": {
+    "profile": "User Profile"
+  },
+  "admin": {
+    "title": "Admin Panel - Users",
+    "username": "Username",
+    "email": "Email",
+    "joined": "Joined"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "socialLogin": "Login with Social Account",
+    "logout": "Logout"
+  },
+  "ui": {
+    "darkMode": "Dark Mode",
+    "lightMode": "Light Mode",
+    "search": "Search..."
+  },
+  "errors": {
+    "fetchFailed": "Failed to fetch data"
+  }
+}

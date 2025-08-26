@@ -2,24 +2,23 @@ import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { prisma } from '../config/db.js'
 
-const generateToken = id => jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '7d' })
-
 export const register = async (req, res) => {
   const { name, email, password } = req.body
-  if (!name || !email || !password) return res.status(400).json({ message: 'All fields required' })
-  const exists = await prisma.user.findUnique({ where: { email } })
-  if (exists) return res.status(400).json({ message: 'User already exists' })
-
-  const hashed = await bcrypt.hash(password, 10)
-  const user = await prisma.user.create({ data: { name, email, password: hashed } })
-  res.status(201).json({ token: generateToken(user.id), user })
+  if (!name || !email || !password) return res.status(400).json({ message: 'Missing fields' })
+  const existing = await prisma.user.findUnique({ where: { email } })
+  if (existing) return res.status(400).json({ message: 'Email exists' })
+  const hash = await bcrypt.hash(password, 10)
+  const user = await prisma.user.create({ data: { name, email, password: hash, role: 'user' } })
+  const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '7d' })
+  res.json({ token, user })
 }
 
 export const login = async (req, res) => {
   const { email, password } = req.body
   const user = await prisma.user.findUnique({ where: { email } })
-  if (!user || !user.password) return res.status(400).json({ message: 'Invalid credentials' })
+  if (!user) return res.status(400).json({ message: 'Invalid credentials' })
   const match = await bcrypt.compare(password, user.password)
   if (!match) return res.status(400).json({ message: 'Invalid credentials' })
-  res.json({ token: generateToken(user.id), user })
+  const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '7d' })
+  res.json({ token, user })
 }

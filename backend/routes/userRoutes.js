@@ -1,9 +1,11 @@
 import express from 'express'
-import { getUsers, getUser, updateUserRole } from '../controllers/userController.js'
-import { protect, admin } from '../middleware/authMiddleware.js'
+import { getProfile, updateProfile, listUsers } from '../controllers/userController.js'
+import { isAuthenticated, isAdmin } from '../middleware/authMiddleware.js'
 
-export const userRouter = express.Router()
-userRouter.use(protect)
-userRouter.get('/', admin, getUsers)
-userRouter.get('/:id', getUser)
-userRouter.put('/:id/role', admin, updateUserRole)
+const router = express.Router()
+
+router.get('/me', isAuthenticated, getProfile)
+router.put('/me', isAuthenticated, updateProfile)
+router.get('/', isAuthenticated, isAdmin, listUsers)
+
+export default router

@@ -1,34 +1,35 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useContext } from "react"
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom"
+import HomePage from "./pages/HomePage"
+import InventoryPage from "./pages/InventoryPage"
+import ItemPage from "./pages/ItemPage"
+import UserPage from "./pages/UserPage"
+import AdminPage from "./pages/AdminPage"
+import { AuthContext } from "./context/AuthContext"
 
-function App() {
-  const [count, setCount] = useState(0)
+const App = () => {
+  const { user } = useContext(AuthContext)
+
+  const PrivateRoute = ({ children }) => {
+    return user ? children : <Navigate to="/login" />
+  }
+
+  const AdminRoute = ({ children }) => {
+    return user && user.role === "admin" ? children : <Navigate to="/" />
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <Router>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/inventory/:id" element={<PrivateRoute><InventoryPage /></PrivateRoute>} />
+        <Route path="/item/:id" element={<PrivateRoute><ItemPage /></PrivateRoute>} />
+        <Route path="/user" element={<PrivateRoute><UserPage /></PrivateRoute>} />
+        <Route path="/admin" element={<AdminRoute><AdminPage /></AdminRoute>} />
+        {/* Optional: add login/register pages */}
+        <Route path="*" element={<h2 className="p-4">Page not found</h2>} />
+      </Routes>
+    </Router>
   )
 }
 
