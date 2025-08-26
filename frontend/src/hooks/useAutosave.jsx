@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react"
 
-const useAutosave = (callback, delay = 7000, dependencies = []) => {
+export function useAutosave(callback, delay = 7000, dependencies = []) {
   const timer = useRef(null)
 
   useEffect(() => {
@@ -13,5 +13,3 @@ const useAutosave = (callback, delay = 7000, dependencies = []) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [...dependencies])
 }
-
-export default useAutosave
